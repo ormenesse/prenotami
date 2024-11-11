@@ -57,7 +57,7 @@ async function navigate(page, wait_for_rome=false) {
 }
 
 (async () => {
-    await waitUntil(22,45,0);
+    await waitUntil(23,45,0);
     const browser = await puppeteer.launch({headless: false, args: [`--window-size=1366,720`], defaultViewport: { width:1366, height: 720} });
     const page = await browser.newPage();
     const now = new Date();

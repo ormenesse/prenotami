@@ -1,5 +1,5 @@
 npm init -y
 ##
-npm install pupperteer
+npm install puppeteer
 ##
 nodejs --env-file=.env puppe.js
