@@ -62,5 +62,5 @@ async function navigate(page, wait_for_rome=false) {
     const page = await browser.newPage();
     const now = new Date();
     console.log(now);
-    navigate(page,wait_for_rome=false);
+    navigate(page,wait_for_rome=true);
 })();
