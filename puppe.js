@@ -35,10 +35,12 @@ async function check_if_available(page) {
 async function check_if_worked(page) {
     const worked = await page.evaluate(() => {
         const t = "Sorry, all appointments for this service are currently booked.";
-        const e = "ERR_CONNECTION_RESET"
+        const e = "ERR_CONNECTION_RESET";
+        const e2 = "ERR_NETWORK_CHANGED";
         if (
             document.body.innerText.includes(t) |
-            document.body.innerText.includes(e)
+            document.body.innerText.includes(e) |
+            document.body.innerText.includes(e2)
         ) {
             return true
         } else {
@@ -54,10 +56,11 @@ async function click_on_reservation(page) {
         throw new Error('Page unavailable');
     }
     await page.click('a[href="/Services/Booking/5256"]');
+    await page.waitForNavigation({ waitUntil: 'load' })
     await delay(1000);
     if ( await check_if_worked(page)) {
-
         console.log("Funcionou nem sei o que fazer agora.");
+        page.screenshot()
         return false;
     } else {
         await page.click('button[type="button"]');
@@ -78,7 +81,7 @@ async function navigate(page, wait_for_rome=false, login=true) {
         } else {
             await page.goto("https://prenotami.esteri.it/Home", {waitUntil: "networkidle2"});
         }
-        await page.waitForSelector('a[href="/Services"]');
+        await page.waitForSelector('a[href="/Services"]',5000);
         if (!check_if_available(page)) {
             throw new Error('Page unavailable');
         }
