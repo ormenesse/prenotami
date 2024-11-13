@@ -35,9 +35,16 @@ async function check_if_available(page) {
 async function check_if_worked(page) {
     const worked = await page.evaluate(() => {
         const t = "Sorry, all appointments for this service are currently booked.";
-        return document.body.innerText.includes(t);
+        const e = "ERR_CONNECTION_RESET"
+        if (
+            document.body.innerText.includes(t) |
+            document.body.innerText.includes(e)
+        ) {
+            return true
+        } else {
+            return false
         }
-    );
+    });
     return !worked;
 }
 
@@ -47,18 +54,18 @@ async function click_on_reservation(page) {
         throw new Error('Page unavailable');
     }
     await page.click('a[href="/Services/Booking/5256"]');
-    await page.waitForNavigation();
-    console.log("veio aqui...");
+    await delay(1000);
     if ( await check_if_worked(page)) {
 
         console.log("Funcionou nem sei o que fazer agora.");
         return false;
     } else {
-        console.log("veio aqui 2...");
         await page.click('button[type="button"]');
+        console.log("Clicou no botão de ok...");
         return true;
     }
 }
+
 async function navigate(page, wait_for_rome=false, login=true) {
     
     try {
@@ -80,17 +87,19 @@ async function navigate(page, wait_for_rome=false, login=true) {
         if (wait_for_rome){
             await waitUntil(23,58,1);
         }
-        const worked = true;
+        let worked = true;
         while(worked) {
             console.log("CLICANDO NAS RESERVAS");
             worked = await click_on_reservation(page);
             console.log("RESULTADO:" + worked);
         }
-    } catch (error){
+    } catch (error) {
         console.log("Error occured:",error);
-        navigate(page, wait_for_rome, false);
+        await navigate(page, wait_for_rome, false);
     }
 }
+
+// function main
 
 (async () => {
     // await waitUntil(23,45,0);
@@ -102,7 +111,6 @@ async function navigate(page, wait_for_rome=false, login=true) {
     //         executablePath: "/usr/bin/google-chrome-stable",
     //         userDataDir: '/home/ormenesse/.config/google-chrome'
     //     }
-        
     // );
     const browser = await puppeteer.launch(
         {
@@ -114,5 +122,5 @@ async function navigate(page, wait_for_rome=false, login=true) {
     const page = await browser.newPage();
     const now = new Date();
     console.log(now);
-    navigate(page,wait_for_rome=false, login=true);
+    await navigate(page,wait_for_rome=false, login=true);
 })();
