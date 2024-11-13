@@ -49,7 +49,7 @@ async function check_if_worked(page) {
 }
 
 async function click_on_reservation(page) { 
-    await page.waitForSelector('a[href="/Services/Booking/5256"]');
+    await page.waitForSelector('a[href="/Services/Booking/5256"]',10000);
     if (! await check_if_available(page)) {
         throw new Error('Page unavailable');
     }
